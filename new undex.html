@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Football Mobile League</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #00c6ff;
+            --gold-accent: #ffd700;
+            --stadium-green: #28a745;
+            --danger-red: #dc3545;
+            --grey: #6c757d;
+
+            /* Base Theme Variables - Light Mode Default */
+            --bg-main: #f0f2f5;
+            --bg-light: #ffffff;
+            --bg-lighter: #f8f9fa;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --hero-overlay: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Dark Mode Variables */
+        .dark-mode {
+            --bg-main: #121212;
+            --bg-light: #1e1e1e;
+            --bg-lighter: #2c2c2c;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-color: #3a3a3a;
+            --hero-overlay: rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            border-bottom: 3px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* Hero Section */
+        #hero {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            height: 45vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            transition: background-image 0.5s;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--hero-overlay);
+            backdrop-filter: blur(2px);
+        }
+
+        .hero-content {
+            z-index: 1;
+        }
+
+        .league-logo {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid white;
+            margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Card and Table Styling */
+        .card {
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-lighter);
+            font-weight: 700;
+        }
+
+        .league-table th, .league-table td {
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 500;
+            vertical-align: middle;
+        }
+
+        .league-table th {
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .league-table tr:hover {
+            background-color: var(--bg-lighter);
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .pos-cell { width: 5%; text-align: center; }
+        .pts-cell { width: 8%; font-weight: 700 !important; }
+        .form-cell { width: 15%; }
+        .form-icon {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            line-height: 15px;
+            text-align: center;
+            border-radius: 3px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.7rem;
+            margin-right: 2px;
+        }
+        .form-win { background-color: var(--stadium-green); }
+        .form-draw { background-color: var(--grey); }
+        .form-loss { background-color: var(--danger-red); }
+
+        /* Fixtures and Results */
+        .matchday-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .matchday-nav h4 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .fixture-card {
+            padding: 15px;
+            transition: transform 0.2s;
+        }
+
+        .fixture-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .match-player {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            width: 40%;
+            text-align: left;
+        }
+        .match-player:last-child {
+            justify-content: flex-end;
+            text-align: right;
+        }
+        .match-player img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 10px;
+        }
+        .match-player:first-child img {
+            order: -1;
+        }
+
+        .match-info {
+            text-align: center;
+            width: 20%;
+        }
+        .match-info .vs {
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: var(--danger-red);
+        }
+        .match-info .date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .result-score {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary-color);
+        }
+        .result-card .match-info .vs {
+            display: none;
+        }
+
+        /* Admin Controls */
+        .admin-controls {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 5;
+        }
+
+        .admin-mode {
+            /* This class is toggled by JS */
+        }
+        
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+
+        /* Player Profile */
+        .player-list-item {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .player-list-item:hover {
+            background-color: var(--bg-lighter);
+        }
+        .player-stat-card {
+            text-align: center;
+            border-left: 5px solid var(--primary-color);
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+        }
+
+        /* Theme Toggle */
+        #themeToggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 15px;
+        }
+
+        /* NEW AI-LOOKING INSIGHTS STYLES */
+        .ai-insights-section {
+            padding-top: 60px;
+            padding-bottom: 60px;
+        }
+        .ai-insights-section:nth-of-type(odd) {
+            background-color: var(--bg-light);
+        }
+
+        .ai-prediction-bar-container {
+            margin-top: 8px;
+            margin-bottom: 15px;
+            background-color: var(--bg-lighter);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        .prediction-bar {
+            height: 25px;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .prediction-bar-segment {
+            float: left;
+            height: 100%;
+            display: flex !important; 
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: width 0.5s ease-in-out;
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+        }
+
+        .win-color { background-color: #28a745; } /* Green */
+        .draw-color { background-color: #6c757d; } /* Grey */
+        .loss-color { background-color: #dc3545; } /* Red */
+
+        .prediction-percentage-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+        .prediction-percentage-labels .p-label {
+            text-align: center;
+            font-weight: 700;
+        }
+        .prediction-percentage-labels .p-label strong {
+            display: block;
+            width: 100%;
+        }
+
+        .game-of-the-day-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 3px 8px;
+            background-color: var(--gold-accent);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 3px;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .news-card-body {
+            white-space: pre-wrap; /* Preserve admin formatting (newlines) */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2rem; }
+            .league-logo { width: 100px; height: 100px; }
+            .fixture-card { padding: 10px; }
+            .match-player span { font-size: 0.9rem; }
+            .match-player img { width: 30px; height: 30px; margin: 0 5px; }
+            .result-score { font-size: 1.2rem; }
+            .form-cell, .pts-cell { display: table-cell; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm" data-bs-theme="light">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fa-solid fa-trophy me-2 text-primary"></i> <span id="league-name">E-Football League</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#standings">Standings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#fixtures">Fixtures</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#results">Results</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#players">Players</a>
+                    </li>
+                    <li class="nav-item admin-mode">
+                        <a class="nav-link" href="#admin-panel">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <button id="admin-login-button" class="btn btn-sm btn-primary ms-lg-3 mt-2 mt-lg-0">Admin Login</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="themeToggle" class="ms-lg-2 mt-2 mt-lg-0"><i class="fa-solid fa-moon"></i></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header id="hero" style="background-image: url('stadium.jpg');">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <img id="intro-image" src="https://i.imgur.com/8Qj9Y0b.png" alt="League Logo" class="league-logo">
+            <h1 id="hero-title">Welcome to the E-Football Mobile League</h1>
+            <p id="hero-subtitle">The ultimate battle for glory and bragging rights.</p>
+        </div>
+    </header>
+
+    <div class="modal fade" id="editFixtureModal" tabindex="-1" aria-labelledby="editFixtureModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editFixtureModalLabel">Edit Fixture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editFixtureId">
+                    <div class="mb-3">
+                        <label for="editFixturePlayer1" class="form-label">Player 1</label>
+                        <select id="editFixturePlayer1" class="form-select" aria-label="Player 1"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editFixturePlayer2" class="form-label">Player 2</label>
+                        <select id="editFixturePlayer2" class="form-select" aria-label="Player 2"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="editFixtureScore1" class="form-label">Score 1</label>
+                            <input type="number" id="editFixtureScore1" class="form-control" min="0" value="" aria-label="Player 1 Score">
+                        </div>
+                        <div class="col">
+                            <label for="editFixtureScore2" class="form-label">Score 2</label>
+                            <input type="number" id="editFixtureScore2" class="form-control" min="0" value="" aria-label="Player 2 Score">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editFixtureDate" class="form-label">Date</label>
+                        <input type="date" id="editFixtureDate" class="form-control" aria-label="Fixture Date">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editFixtureMatchday" class="form-label">Matchday</label>
+                        <input type="number" id="editFixtureMatchday" class="form-control" min="1" value="1" aria-label="Matchday">
+                    </div>
+
+                    <div class="admin-mode">
+                        <h5 class="mt-4 text-primary"><i class="fa-solid fa-chart-line me-1"></i> Prediction & News Control</h5>
+                        
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <label for="adminWinPct" class="form-label small text-success">P1 Win % (Green)</label>
+                                <input type="number" id="adminWinPct" class="form-control" min="0" max="100" value="0">
+                            </div>
+                            <div class="col-4">
+                                <label for="adminDrawPct" class="form-label small text-secondary">Draw % (Grey)</label>
+                                <input type="number" id="adminDrawPct" class="form-control" min="0" max="100" value="0">
+                            </div>
+                            <div class="col-4">
+                                <label for="adminLossPct" class="form-label small text-danger">P2 Win % (Red)</label>
+                                <input type="number" id="adminLossPct" class="form-control" min="0" max="100" value="0">
+                            </div>
+                            <div class="col-12 text-center mt-1">
+                                <small class="text-info" id="predictionTotal">Total: 0% (Must be 100%)</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="adminPreMatchNews" class="form-label small"><i class="fa-solid fa-comment-dots me-1"></i> Pre-Match Analysis/News</label>
+                            <textarea id="adminPreMatchNews" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="adminIsGameOfTheDay">
+                            <label class="form-check-label text-warning" for="adminIsGameOfTheDay">
+                                <i class="fa-solid fa-trophy me-1"></i> Mark as Game of the Day
+                            </label>
+                        </div>
+                    </div>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger me-auto admin-mode" onclick="deleteFixture()">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveFixture()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="editPlayerModal" tabindex="-1" aria-labelledby="editPlayerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPlayerModalLabel">Edit Player</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editPlayerId">
+                    <div class="mb-3">
+                        <label for="editPlayerName" class="form-label">Player Name</label>
+                        <input type="text" id="editPlayerName" class="form-control" placeholder="Enter name" aria-label="Player Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPlayerAvatarUrl" class="form-label">Avatar URL</label>
+                        <input type="url" id="editPlayerAvatarUrl" class="form-control" placeholder="Paste image URL" aria-label="Player Avatar URL">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPlayerTeam" class="form-label">Favorite Team/Club</label>
+                        <input type="text" id="editPlayerTeam" class="form-control" placeholder="e.g. Manchester United" aria-label="Player Team">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPlayerBio" class="form-label">Bio/Description</label>
+                        <textarea id="editPlayerBio" class="form-control" rows="3" placeholder="A short description about the player..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger me-auto admin-mode" onclick="deletePlayer()">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitEditPlayer()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editBackgroundModal" tabindex="-1" aria-labelledby="editBackgroundModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editBackgroundModalLabel">Edit Hero Background Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editBackgroundUrl" class="form-label">Background Image URL</label>
+                        <input type="url" id="editBackgroundUrl" class="form-control" placeholder="Paste image URL (e.g., of a stadium)" aria-label="Background URL">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editIntroImageUrl" class="form-label">Intro/Logo Image URL</label>
+                        <input type="url" id="editIntroImageUrl" class="form-control" placeholder="Paste image URL for the logo/intro image" aria-label="Intro Image URL">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitEditBackground()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="adminPanelModal" tabindex="-1" aria-labelledby="adminPanelModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="adminPanelModalLabel">Admin Panel - Data Management</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger">Be careful! This panel allows full data manipulation.</p>
+                    <div class="mb-3">
+                        <label for="dataJson" class="form-label">League Data JSON</label>
+                        <textarea id="dataJson" class="form-control" rows="10" placeholder="Paste JSON data here for import..."></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-success" onclick="importData()">
+                            <i class="fa-solid fa-file-import me-1"></i> Import Data
+                        </button>
+                        <button class="btn btn-warning text-dark" onclick="exportData()">
+                            <i class="fa-solid fa-file-export me-1"></i> Export Data
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <main>
+        <section id="standings" class="py-5">
+            <div class="container">
+                <h2 class="section-title">Standings</h2>
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table league-table table-striped mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="pos-cell">#</th>
+                                        <th scope="col" style="width: 30%;">Player</th>
+                                        <th scope="col">MP</th>
+                                        <th scope="col">W</th>
+                                        <th scope="col">D</th>
+                                        <th scope="col">L</th>
+                                        <th scope="col">GF</th>
+                                        <th scope="col">GA</th>
+                                        <th scope="col">GD</th>
+                                        <th scope="col" class="form-cell">Form</th>
+                                        <th scope="col" class="pts-cell">Pts</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="standingsTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-mode mt-4 text-center">
+                    <button class="btn btn-primary me-2" onclick="showAddPlayerModal()">
+                        <i class="fa-solid fa-user-plus me-1"></i> Add Player
+                    </button>
+                    <button class="btn btn-info me-2 text-white" onclick="showEditBackgroundModal()">
+                        <i class="fa-solid fa-image me-1"></i> Edit Hero Images
+                    </button>
+                    <button class="btn btn-danger" onclick="resetLeague()">
+                        <i class="fa-solid fa-trash me-1"></i> Reset League
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="ai-insights-section" class="py-5">
+            <div class="container">
+                <h2 class="section-title text-primary"><i class="fa-solid fa-microchip me-2"></i> AI-Powered News & GOTD</h2>
+                <div id="gameOfTheDayCard" class="card mb-4 d-none">
+                    <div class="card-header bg-success text-white">
+                        <i class="fa-solid fa-star me-2"></i> GAME OF THE DAY
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="gotd-match-title"></h5>
+                        <div id="gotd-prediction-bar-container">
+                            </div>
+                        <p class="card-text news-card-body" id="gotd-news-content"></p>
+                        <a href="#fixtures" class="btn btn-sm btn-outline-primary mt-2">View Fixture Details</a>
+                    </div>
+                </div>
+                
+                <div id="generalNewsCard" class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <i class="fa-solid fa-newspaper me-2"></i> Matchday News Analysis
+                    </div>
+                    <div class="card-body">
+                        <p id="matchdayNewsContent" class="card-text news-card-body">No news for this matchday yet.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="fixtures" class="py-5">
+            <div class="container">
+                <h2 class="section-title">Fixtures</h2>
+                <div class="matchday-nav">
+                    <button class="btn btn-primary" id="prevMatchday" onclick="changeMatchday(-1)">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h4 id="currentMatchday">Matchday 1</h4>
+                    <button class="btn btn-primary" id="nextMatchday" onclick="changeMatchday(1)">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div id="fixturesContainer">
+                    </div>
+                <div class="admin-mode mt-4 text-center">
+                    <button class="btn btn-primary me-2" onclick="showAddFixtureModal()">
+                        <i class="fa-solid fa-calendar-plus me-1"></i> Add Fixture
+                    </button>
+                    <button class="btn btn-success" onclick="generateFixtures()">
+                        <i class="fa-solid fa-cogs me-1"></i> Generate Fixtures
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="results" class="py-5">
+            <div class="container">
+                <h2 class="section-title">Past Results</h2>
+                <div id="resultsContainer">
+                    </div>
+            </div>
+        </section>
+
+        <section id="players" class="py-5">
+            <div class="container">
+                <h2 class="section-title">Player Profiles</h2>
+                <div id="playerList" class="list-group">
+                    </div>
+
+                <div id="playerProfile" class="card mt-4 d-none">
+                    </div>
+            </div>
+        </section>
+
+        <section id="admin-panel" class="py-5 admin-mode">
+            <div class="container">
+                <h2 class="section-title text-danger">Admin Panel</h2>
+                <button class="btn btn-lg btn-danger" onclick="logoutAdmin()">
+                    <i class="fa-solid fa-lock-open me-1"></i> Admin Logout
+                </button>
+                <button class="btn btn-lg btn-secondary ms-2" data-bs-toggle="modal" data-bs-target="#adminPanelModal">
+                    <i class="fa-solid fa-database me-1"></i> Data Management
+                </button>
+            </div>
+        </section>
+    </main>
+    
+    <div class="toast-container">
+        <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toast-message"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container">
+            <p class="m-0">&copy; <span id="currentYear"></span> E-Football Mobile League. Developed by [Your Name/Community].</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // --- Global State ---
+        let leagueData = {
+            leagueName: "E-Football Mobile League",
+            heroTitle: "Welcome to the E-Football Mobile League",
+            heroSubtitle: "The ultimate battle for glory and bragging rights.",
+            backgroundUrl: 'stadium.jpg',
+            introImageUrl: 'https://i.imgur.com/8Qj9Y0b.png',
+            players: [],
+            fixtures: [],
+            currentMatchday: 1
+        };
+        let isAdmin = false;
+        const storageKey = 'efootballLeagueData';
+        const themeToggle = document.getElementById('themeToggle');
+
+        // --- Utility Functions ---
+
+        function generateId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function applyTheme(theme) {
+            document.body.classList.toggle('dark-mode', theme === 'dark');
+            localStorage.setItem('theme', theme);
+            const icon = theme === 'dark' ? 'fa-sun' : 'fa-moon';
+            const oppositeIcon = theme === 'dark' ? 'fa-moon' : 'fa-sun';
+            themeToggle.querySelector('i').classList.remove(oppositeIcon);
+            themeToggle.querySelector('i').classList.add(icon);
+            document.querySelector('nav').setAttribute('data-bs-theme', theme === 'dark' ? 'dark' : 'light');
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        }
+
+        function showToast(message, type) {
+            const toast = document.getElementById('liveToast');
+            const toastBody = document.getElementById('toast-message');
+            toastBody.textContent = message;
+
+            // Remove existing background classes
+            toast.classList.remove('bg-success', 'bg-danger', 'bg-warning', 'bg-info');
+            
+            // Add new background class
+            if (type === 'success') {
+                toast.classList.add('bg-success');
+            } else if (type === 'danger') {
+                toast.classList.add('bg-danger');
+            } else if (type === 'warning') {
+                toast.classList.add('bg-warning');
+            } else if (type === 'info') {
+                toast.classList.add('bg-info');
+            }
+
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+            toastBootstrap.show();
+        }
+
+        function applyBackground() {
+            document.getElementById('hero').style.backgroundImage = `url('${leagueData.backgroundUrl}')`;
+            document.getElementById('intro-image').src = leagueData.introImageUrl;
+            document.getElementById('league-name').textContent = leagueData.leagueName;
+            document.getElementById('hero-title').textContent = leagueData.heroTitle;
+            document.getElementById('hero-subtitle').textContent = leagueData.heroSubtitle;
+        }
+
+        // --- Data Management Functions ---
+        async function saveData() {
+            localStorage.setItem(storageKey, JSON.stringify(leagueData));
+        }
+
+        function loadData() {
+            const savedData = localStorage.getItem(storageKey);
+            if (savedData) {
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    // Merge with defaults to prevent errors on new properties
+                    leagueData = { ...leagueData, ...parsedData };
+                    // Ensure fixture properties exist for new features
+                    leagueData.fixtures.forEach(f => {
+                        f.prediction = f.prediction || { player1Win: 0, draw: 0, player2Win: 0 };
+                        f.preMatchNews = f.preMatchNews || "";
+                        f.isGameOfTheDay = f.isGameOfTheDay || false;
+                    });
+                } catch (e) {
+                    showToast("Corrupted data found. Using default league data.", 'danger');
+                    // Data reset is not needed here, just use defaults
+                }
+            }
+            applyBackground();
+            calculateTotalMatchdays();
+            updateViews();
+        }
+
+        // --- Admin Functions ---
+        function showAdminLogin() {
+            const password = prompt("Enter admin password:");
+            // Simple password check. In a real application, use server-side authentication.
+            if (password === "admin123") { 
+                isAdmin = true;
+                document.querySelectorAll('.admin-mode').forEach(el => el.style.display = 'block');
+                document.getElementById('admin-login-button').style.display = 'none';
+                showToast("Admin mode activated!", 'success');
+                updateViews(); // Refresh to show edit buttons
+            } else if (password !== null) {
+                showToast("Incorrect password.", 'danger');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            document.querySelectorAll('.admin-mode').forEach(el => el.style.display = 'none');
+            document.getElementById('admin-login-button').style.display = 'block';
+            showToast("Admin mode deactivated.", 'info');
+            updateViews(); // Refresh to hide edit buttons
+        }
+
+        function showEditBackgroundModal() {
+            if (!isAdmin) { showToast('Admin access required.', 'danger'); return; }
+            document.getElementById('editBackgroundUrl').value = leagueData.backgroundUrl;
+            document.getElementById('editIntroImageUrl').value = leagueData.introImageUrl;
+            const modal = new bootstrap.Modal(document.getElementById('editBackgroundModal'));
+            modal.show();
+        }
+
+        async function submitEditBackground() {
+            if (!isAdmin) return;
+            leagueData.backgroundUrl = document.getElementById('editBackgroundUrl').value;
+            leagueData.introImageUrl = document.getElementById('editIntroImageUrl').value;
+            applyBackground();
+            await saveData();
+            bootstrap.Modal.getInstance(document.getElementById('editBackgroundModal')).hide();
+            showToast('Hero images updated successfully!', 'success');
+        }
+
+        async function resetLeague() {
+            if (!isAdmin) return;
+            if (confirm("Are you sure you want to PERMANENTLY reset all league data?")) {
+                localStorage.removeItem(storageKey);
+                leagueData = {
+                    leagueName: "E-Football Mobile League",
+                    heroTitle: "Welcome to the E-Football Mobile League",
+                    heroSubtitle: "The ultimate battle for glory and bragging rights.",
+                    backgroundUrl: 'stadium.jpg',
+                    introImageUrl: 'https://i.imgur.com/8Qj9Y0b.png',
+                    players: [],
+                    fixtures: [],
+                    currentMatchday: 1
+                };
+                await saveData();
+                loadData();
+                showToast("League data reset successfully!", 'success');
+            }
+        }
+        
+        async function importData() {
+            if (!isAdmin) { showToast('Admin access required.', 'danger'); return; }
+            const json = document.getElementById('dataJson').value;
+            try {
+                const importedData = JSON.parse(json);
+                // Simple validation check
+                if (!importedData.players || !importedData.fixtures) {
+                    throw new Error("Invalid structure.");
+                }
+
+                // Merge with current data, replacing key parts
+                leagueData = { 
+                    ...leagueData, 
+                    ...importedData,
+                    currentMatchday: importedData.currentMatchday || 1
+                };
+                
+                // Ensure fixture properties exist for new features
+                leagueData.fixtures.forEach(f => {
+                    f.prediction = f.prediction || { player1Win: 0, draw: 0, player2Win: 0 };
+                    f.preMatchNews = f.preMatchNews || "";
+                    f.isGameOfTheDay = f.isGameOfTheDay || false;
+                });
+
+                await saveData();
+                applyBackground();
+                populateFixtureSelectors();
+                calculateTotalMatchdays();
+                updateViews();
+                showToast('Data imported successfully!', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('adminPanelModal')).hide();
+            } catch (error) {
+                console.error('Import error:', error);
+                showToast('Invalid JSON format or structure.', 'danger');
+            }
+        }
+
+        function exportData() {
+            if (!isAdmin) { showToast('Admin access required.', 'danger'); return; }
+            const json = JSON.stringify(leagueData, null, 2);
+            document.getElementById('dataJson').value = json;
+            document.getElementById('dataJson').select();
+            try {
+                navigator.clipboard.writeText(json).then(() => {
+                    showToast('Data exported and copied to clipboard! 📋', 'success');
+                }).catch(() => {
+                    showToast('Data exported. Copy it from the text box.', 'info');
+                });
+            } catch (err) {
+                showToast('Data exported. Copy it from the text box.', 'info');
+            }
+        }
+
+        // --- Player Management ---
+        function populatePlayerSelectors() {
+            const selectors = document.querySelectorAll('#editFixturePlayer1, #editFixturePlayer2');
+            selectors.forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">Select Player</option>';
+                leagueData.players.forEach(player => {
+                    const option = document.createElement('option');
+                    option.value = player.id;
+                    option.textContent = player.name;
+                    select.appendChild(option);
+                });
+                select.value = currentValue;
+            });
+        }
+
+        function showAddPlayerModal() {
+            if (!isAdmin) return;
+            document.getElementById('editPlayerId').value = '';
+            document.getElementById('editPlayerName').value = '';
+            document.getElementById('editPlayerAvatarUrl').value = '';
+            document.getElementById('editPlayerTeam').value = '';
+            document.getElementById('editPlayerBio').value = '';
+            document.getElementById('editPlayerModalLabel').textContent = 'Add New Player';
+            
+            // Hide delete button for 'Add' mode
+            const deleteBtn = document.querySelector('#editPlayerModal .btn-danger');
+            if (deleteBtn) deleteBtn.style.display = 'none';
+
+            const modal = new bootstrap.Modal(document.getElementById('editPlayerModal'));
+            modal.show();
+        }
+
+        function openEditPlayerModal(id) {
+            if (!isAdmin) return;
+            const player = leagueData.players.find(p => p.id === id);
+            if (!player) return;
+
+            document.getElementById('editPlayerId').value = player.id;
+            document.getElementById('editPlayerName').value = player.name;
+            document.getElementById('editPlayerAvatarUrl').value = player.avatarUrl;
+            document.getElementById('editPlayerTeam').value = player.team || '';
+            document.getElementById('editPlayerBio').value = player.bio || '';
+            document.getElementById('editPlayerModalLabel').textContent = `Edit ${player.name}`;
+
+            // Show delete button for 'Edit' mode
+            const deleteBtn = document.querySelector('#editPlayerModal .btn-danger');
+            if (deleteBtn) deleteBtn.style.display = 'block';
+
+            const modal = new bootstrap.Modal(document.getElementById('editPlayerModal'));
+            modal.show();
+        }
+
+        async function submitEditPlayer() {
+            if (!isAdmin) return;
+            const id = document.getElementById('editPlayerId').value;
+            const name = document.getElementById('editPlayerName').value;
+            const avatarUrl = document.getElementById('editPlayerAvatarUrl').value;
+            const team = document.getElementById('editPlayerTeam').value;
+            const bio = document.getElementById('editPlayerBio').value;
+
+            if (!name) { showToast('Player name is required.', 'warning'); return; }
+
+            let player = leagueData.players.find(p => p.id === id);
+
+            if (player) {
+                // Edit existing player
+                player.name = name;
+                player.avatarUrl = avatarUrl;
+                player.team = team;
+                player.bio = bio;
+                showToast('Player updated successfully!', 'success');
+            } else {
+                // Add new player
+                player = { id: generateId(), name, avatarUrl, team, bio };
+                leagueData.players.push(player);
+                showToast('Player added successfully!', 'success');
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('editPlayerModal')).hide();
+            await saveData();
+            updateViews();
+        }
+
+        async function deletePlayer() {
+            if (!isAdmin) return;
+            const id = document.getElementById('editPlayerId').value;
+            if (confirm("Are you sure you want to delete this player and all their fixtures?")) {
+                leagueData.players = leagueData.players.filter(p => p.id !== id);
+                leagueData.fixtures = leagueData.fixtures.filter(f => f.player1Id !== id && f.player2Id !== id);
+                
+                bootstrap.Modal.getInstance(document.getElementById('editPlayerModal')).hide();
+                await saveData();
+                updateViews();
+                showToast('Player and related fixtures deleted.', 'success');
+            }
+        }
+
+        // --- Fixture Management ---
+        function calculateTotalMatchdays() {
+            const matchdays = leagueData.fixtures.map(f => f.matchday).filter(Boolean);
+            return matchdays.length > 0 ? Math.max(...matchdays) : 1;
+        }
+
+        function getCurrentMatchday() {
+            return leagueData.currentMatchday;
+        }
+
+        function changeMatchday(direction) {
+            const totalMatchdays = calculateTotalMatchdays();
+            const newMatchday = leagueData.currentMatchday + direction;
+
+            if (newMatchday >= 1 && newMatchday <= totalMatchdays) {
+                leagueData.currentMatchday = newMatchday;
+                updateViews();
+            } else if (newMatchday > totalMatchdays && totalMatchdays > 0) {
+                 showToast(`Matchday ${totalMatchdays} is the final matchday.`, 'info');
+            }
+        }
+
+        function populateFixtureSelectors() {
+            const selectors = document.querySelectorAll('#editFixturePlayer1, #editFixturePlayer2, #addFixturePlayer1, #addFixturePlayer2');
+            selectors.forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">Select Player</option>';
+                leagueData.players.forEach(player => {
+                    const option = document.createElement('option');
+                    option.value = player.id;
+                    option.textContent = player.name;
+                    select.appendChild(option);
+                });
+                select.value = currentValue;
+            });
+        }
+
+        function showAddFixtureModal() {
+            if (!isAdmin) return;
+            document.getElementById('editFixtureId').value = '';
+            document.getElementById('editFixturePlayer1').value = '';
+            document.getElementById('editFixturePlayer2').value = '';
+            document.getElementById('editFixtureScore1').value = '';
+            document.getElementById('editFixtureScore2').value = '';
+            document.getElementById('editFixtureDate').value = '';
+            document.getElementById('editFixtureMatchday').value = calculateTotalMatchdays() || 1;
+            document.getElementById('editFixtureModalLabel').textContent = 'Add New Fixture';
+
+            // Resetting prediction fields on add
+            if (document.getElementById('adminWinPct')) {
+                document.getElementById('adminWinPct').value = 50;
+                document.getElementById('adminDrawPct').value = 0;
+                document.getElementById('adminLossPct').value = 50;
+                document.getElementById('adminPreMatchNews').value = '';
+                document.getElementById('adminIsGameOfTheDay').checked = false;
+                updatePredictionTotal();
+            }
+
+            // Hide delete button for 'Add' mode
+            const deleteBtn = document.querySelector('#editFixtureModal .btn-danger');
+            if (deleteBtn) deleteBtn.style.display = 'none';
+
+            populatePlayerSelectors();
+            const modal = new bootstrap.Modal(document.getElementById('editFixtureModal'));
+            modal.show();
+        }
+
+        function openEditFixtureModal(id) {
+            if (!isAdmin) return;
+            const fixture = leagueData.fixtures.find(f => f.id === id);
+            if (!fixture) return;
+
+            document.getElementById('editFixtureId').value = fixture.id;
+            document.getElementById('editFixturePlayer1').value = fixture.player1Id;
+            document.getElementById('editFixturePlayer2').value = fixture.player2Id;
+            document.getElementById('editFixtureScore1').value = fixture.score1 !== undefined ? fixture.score1 : '';
+            document.getElementById('editFixtureScore2').value = fixture.score2 !== undefined ? fixture.score2 : '';
+            document.getElementById('editFixtureDate').value = fixture.date || '';
+            document.getElementById('editFixtureMatchday').value = fixture.matchday || 1;
+            document.getElementById('editFixtureModalLabel').textContent = `Edit Fixture: ${leagueData.players.find(p => p.id === fixture.player1Id)?.name || 'P1'} vs ${leagueData.players.find(p => p.id === fixture.player2Id)?.name || 'P2'}`;
+
+            // NEW: Populate Prediction, News, and GOTD fields
+            if (document.getElementById('adminWinPct')) {
+                const defaultPrediction = { player1Win: 50, draw: 0, player2Win: 50 };
+                const prediction = fixture.prediction || defaultPrediction;
+
+                document.getElementById('adminWinPct').value = prediction.player1Win;
+                document.getElementById('adminDrawPct').value = prediction.draw;
+                document.getElementById('adminLossPct').value = prediction.player2Win;
+                document.getElementById('adminPreMatchNews').value = fixture.preMatchNews || '';
+                document.getElementById('adminIsGameOfTheDay').checked = fixture.isGameOfTheDay || false;
+                
+                updatePredictionTotal(); // Update the total text on modal load
+            }
+
+            // Show delete button for 'Edit' mode
+            const deleteBtn = document.querySelector('#editFixtureModal .btn-danger');
+            if (deleteBtn) deleteBtn.style.display = 'block';
+
+            populatePlayerSelectors();
+            const modal = new bootstrap.Modal(document.getElementById('editFixtureModal'));
+            modal.show();
+        }
+
+        async function saveFixture() {
+            if (!isAdmin) return;
+            const id = document.getElementById('editFixtureId').value;
+            const player1Id = document.getElementById('editFixturePlayer1').value;
+            const player2Id = document.getElementById('editFixturePlayer2').value;
+            const score1 = document.getElementById('editFixtureScore1').value !== '' ? parseInt(document.getElementById('editFixtureScore1').value) : undefined;
+            const score2 = document.getElementById('editFixtureScore2').value !== '' ? parseInt(document.getElementById('editFixtureScore2').value) : undefined;
+            const date = document.getElementById('editFixtureDate').value;
+            const matchday = parseInt(document.getElementById('editFixtureMatchday').value);
+
+            if (!player1Id || !player2Id) { showToast('Please select both players.', 'warning'); return; }
+            if (player1Id === player2Id) { showToast('Players cannot play against themselves.', 'warning'); return; }
+
+            let fixture = leagueData.fixtures.find(f => f.id === id);
+
+            if (fixture) {
+                // Edit existing fixture
+                fixture.player1Id = player1Id;
+                fixture.player2Id = player2Id;
+                fixture.score1 = score1;
+                fixture.score2 = score2;
+                fixture.date = date;
+                fixture.matchday = matchday;
+                showToast('Fixture updated successfully!', 'success');
+            } else {
+                // Add new fixture
+                fixture = { 
+                    id: generateId(), 
+                    player1Id, 
+                    player2Id, 
+                    score1, 
+                    score2, 
+                    date, 
+                    matchday,
+                    prediction: { player1Win: 50, draw: 0, player2Win: 50 },
+                    preMatchNews: '',
+                    isGameOfTheDay: false
+                };
+                leagueData.fixtures.push(fixture);
+                showToast('Fixture added successfully!', 'success');
+            }
+
+            // NEW: Save Prediction, News, and GOTD fields
+            if (isAdmin && document.getElementById('adminWinPct')) {
+                const p1 = parseInt(document.getElementById('adminWinPct').value) || 0;
+                const draw = parseInt(document.getElementById('adminDrawPct').value) || 0;
+                const p2 = parseInt(document.getElementById('adminLossPct').value) || 0;
+                
+                if (p1 + draw + p2 === 100) {
+                    fixture.prediction = {
+                        player1Win: p1,
+                        draw: draw,
+                        player2Win: p2
+                    };
+                } else {
+                    showToast('Prediction percentages must total 100%. Prediction reset to 50/0/50.', 'warning');
+                    fixture.prediction = { player1Win: 50, draw: 0, player2Win: 50 };
+                }
+                
+                fixture.preMatchNews = document.getElementById('adminPreMatchNews').value;
+                
+                // Logic to ensure only one GOTD is active
+                const isGotdChecked = document.getElementById('adminIsGameOfTheDay').checked;
+                
+                // Clear all other GOTD flags first (important for single GOTD)
+                if (isGotdChecked) {
+                    leagueData.fixtures.forEach(f => {
+                        if (f.id !== fixture.id) f.isGameOfTheDay = false;
+                    });
+                }
+                
+                // Set the flag on the current fixture
+                fixture.isGameOfTheDay = isGotdChecked;
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('editFixtureModal')).hide();
+            await saveData();
+            calculateTotalMatchdays(); // Recalculate if a new matchday was added
+            updateViews();
+        }
+
+        async function deleteFixture() {
+            if (!isAdmin) return;
+            const id = document.getElementById('editFixtureId').value;
+            if (confirm("Are you sure you want to delete this fixture?")) {
+                leagueData.fixtures = leagueData.fixtures.filter(f => f.id !== id);
+                
+                bootstrap.Modal.getInstance(document.getElementById('editFixtureModal')).hide();
+                await saveData();
+                calculateTotalMatchdays();
+                updateViews();
+                showToast('Fixture deleted.', 'success');
+            }
+        }
+
+        function generateFixtures() {
+            if (!isAdmin) return;
+            if (leagueData.players.length < 2) {
+                showToast('Need at least 2 players to generate fixtures.', 'warning');
+                return;
+            }
+            if (!confirm("This will overwrite all existing unplayed fixtures. Continue?")) return;
+
+            const playerIds = leagueData.players.map(p => p.id);
+            const newFixtures = [];
+            let matchdayCounter = 1;
+
+            // Simple round-robin logic
+            const n = playerIds.length;
+            const rounds = n % 2 === 0 ? n - 1 : n;
+            const matchesPerRound = Math.floor(n / 2);
+
+            for (let r = 0; r < rounds; r++) {
+                for (let i = 0; i < matchesPerRound; i++) {
+                    let player1Index = i;
+                    let player2Index = n - 1 - i;
+                    
+                    if (n % 2 !== 0 && i === matchesPerRound) { // Odd number of players, one gets a bye/rest
+                        continue;
+                    }
+                    
+                    const p1 = playerIds[player1Index];
+                    const p2 = playerIds[player2Index];
+                    
+                    // Match 1 (p1 vs p2)
+                    newFixtures.push({
+                        id: generateId(),
+                        player1Id: p1,
+                        player2Id: p2,
+                        score1: undefined,
+                        score2: undefined,
+                        date: '',
+                        matchday: matchdayCounter,
+                        prediction: { player1Win: 50, draw: 0, player2Win: 50 },
+                        preMatchNews: '',
+                        isGameOfTheDay: false
+                    });
+                }
+                matchdayCounter++;
+
+                // Rotate players (Fixed player at index 0, others rotate)
+                const last = playerIds.pop();
+                playerIds.splice(1, 0, last);
+            }
+
+            // Remove unplayed fixtures and add new ones
+            leagueData.fixtures = leagueData.fixtures.filter(f => f.score1 !== undefined && f.score2 !== undefined);
+            leagueData.fixtures.push(...newFixtures);
+            leagueData.currentMatchday = 1;
+            
+            saveData().then(() => {
+                calculateTotalMatchdays();
+                updateViews();
+                showToast(`Generated ${newFixtures.length} new fixtures across ${matchdayCounter - 1} matchdays.`, 'success');
+            });
+        }
+
+        // --- View Update Functions ---
+        
+        function updatePredictionTotal() {
+            // Check if the admin elements exist (they are inside the admin-mode div)
+            const p1El = document.getElementById('adminWinPct');
+            if (!p1El) return; 
+            
+            const p1 = parseInt(p1El.value) || 0;
+            const draw = parseInt(document.getElementById('adminDrawPct').value) || 0;
+            const p2 = parseInt(document.getElementById('adminLossPct').value) || 0;
+            const total = p1 + draw + p2;
+            const totalEl = document.getElementById('predictionTotal');
+
+            totalEl.textContent = `Total: ${total}% (Must be 100%)`;
+            if (total === 100) {
+                totalEl.classList.remove('text-danger');
+                totalEl.classList.add('text-success');
+                totalEl.classList.remove('text-info');
+            } else {
+                totalEl.classList.remove('text-success');
+                totalEl.classList.add('text-danger');
+                totalEl.classList.remove('text-info');
+            }
+        }
+
+        // Renders the proportional prediction bar HTML
+        function renderPredictionBar(prediction, isSmall = false) {
+            if (!prediction || (prediction.player1Win + prediction.draw + prediction.player2Win) !== 100) {
+                return '';
+            }
+
+            const p1 = prediction.player1Win;
+            const draw = prediction.draw;
+            const p2 = prediction.player2Win;
+            const fontSize = isSmall ? '0.7rem' : '0.85rem';
+            const barHeight = isSmall ? '20px' : '25px';
+
+            // HTML for the percentage labels above the bar
+            const labelHTML = `
+                <div class="prediction-percentage-labels">
+                    <div class="p-label text-start" style="width: ${p1}%;">
+                        <strong class="text-success">${p1}%</strong>
+                    </div>
+                    <div class="p-label" style="width: ${draw}%;">
+                        <strong class="text-secondary">${draw}%</strong>
+                    </div>
+                    <div class="p-label text-end" style="width: ${p2}%;">
+                        <strong class="text-danger">${p2}%</strong>
+                    </div>
+                </div>
+            `;
+
+            // HTML for the proportional bar segments
+            const barHTML = `
+                <div class="prediction-bar" style="height: ${barHeight};" title="P1 Win: ${p1}%, Draw: ${draw}%, P2 Win: ${p2}%">
+                    <div class="prediction-bar-segment win-color" style="width: ${p1}%; font-size: ${fontSize};">
+                        ${p1 >= 10 ? 'WIN' : ''}
+                    </div>
+                    <div class="prediction-bar-segment draw-color" style="width: ${draw}%; font-size: ${fontSize};">
+                        ${draw >= 10 ? 'DRAW' : ''}
+                    </div>
+                    <div class="prediction-bar-segment loss-color" style="width: ${p2}%; font-size: ${fontSize};">
+                        ${p2 >= 10 ? 'LOSS' : ''}
+                    </div>
+                </div>
+            `;
+            
+            return `<div class="ai-prediction-bar-container">${labelHTML}${barHTML}</div>`;
+        }
+
+
+        function updateAISection() {
+            const gotdCard = document.getElementById('gameOfTheDayCard');
+            const newsContentEl = document.getElementById('matchdayNewsContent');
+            const currentMatchday = getCurrentMatchday();
+
+            const fixturesOnMatchday = leagueData.fixtures.filter(f => f.matchday == currentMatchday);
+            
+            let gameOfTheDay = null;
+            let matchdayNews = "";
+            
+            // 1. Find the GOTD and gather news for the current matchday
+            for (const fixture of fixturesOnMatchday) {
+                if (fixture.isGameOfTheDay) {
+                    gameOfTheDay = fixture;
+                }
+                // If a fixture (especially GOTD) has news, use it as the main analysis
+                if (fixture.preMatchNews) {
+                     matchdayNews = fixture.preMatchNews;
+                }
+            }
+
+            // 2. Update Game of the Day Section
+            if (gameOfTheDay) {
+                gotdCard.classList.remove('d-none');
+                
+                const player1 = leagueData.players.find(p => p.id === gameOfTheDay.player1Id);
+                const player2 = leagueData.players.find(p => p.id === gameOfTheDay.player2Id);
+                
+                if (player1 && player2) {
+                    document.getElementById('gotd-match-title').textContent = `${player1.name} vs ${player2.name}`;
+                } else {
+                    document.getElementById('gotd-match-title').textContent = `Matchday ${currentMatchday} Highlight`;
+                }
+                
+                // Render the prediction bar in the GOTD card (full size)
+                document.getElementById('gotd-prediction-bar-container').innerHTML = renderPredictionBar(gameOfTheDay.prediction, false);
+                
+                // Use the news from the GOTD fixture as the analysis
+                document.getElementById('gotd-news-content').textContent = gameOfTheDay.preMatchNews || 'Detailed analysis not available.';
+
+            } else {
+                gotdCard.classList.add('d-none');
+            }
+
+            // 3. Update General News Section
+            if (!matchdayNews && fixturesOnMatchday.length > 0) {
+                matchdayNews = `Preview for Matchday ${currentMatchday}. All eyes are on the table as the competition heats up! Use the admin panel to add detailed analysis.`;
+            } else if (fixturesOnMatchday.length === 0) {
+                matchdayNews = `No fixtures found for Matchday ${currentMatchday}. Please generate fixtures in the Admin Panel.`;
+            }
+
+            document.getElementById('matchdayNewsContent').textContent = matchdayNews;
+        }
+
+
+        function updateFixtures() {
+            const totalMatchdays = calculateTotalMatchdays();
+            const currentMatchday = getCurrentMatchday();
+            document.getElementById('currentMatchday').textContent = `Matchday ${currentMatchday}`;
+            document.getElementById('prevMatchday').disabled = currentMatchday <= 1;
+            document.getElementById('nextMatchday').disabled = currentMatchday >= totalMatchdays;
+
+            const fixturesOnMatchday = leagueData.fixtures
+                .filter(f => f.matchday == currentMatchday)
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            const fixturesContainer = document.getElementById('fixturesContainer');
+            if (fixturesOnMatchday.length === 0) {
+                fixturesContainer.innerHTML = `<p class="text-center text-secondary">No fixtures scheduled for Matchday ${currentMatchday}. ${isAdmin ? 'Use the Admin Panel to add or generate fixtures.' : ''}</p>`;
+            } else {
+                const fixtureHTML = fixturesOnMatchday.map(fixture => {
+                    const player1 = leagueData.players.find(p => p.id === fixture.player1Id);
+                    const player2 = leagueData.players.find(p => p.id === fixture.player2Id);
+
+                    if (!player1 || !player2) return '';
+
+                    const adminControlsHTML = isAdmin ? `
+                        <div class="admin-controls">
+                            <button class="btn btn-sm btn-info" onclick="openEditFixtureModal('${fixture.id}')">
+                                <i class="fa-solid fa-edit"></i>
+                            </button>
+                        </div>
+                    ` : '';
+                    
+                    // Show score only if result is entered
+                    let matchInfoContent = '';
+                    if (fixture.score1 !== undefined && fixture.score2 !== undefined) {
+                        matchInfoContent = `<span class="result-score text-success">${fixture.score1}</span> <span class="vs"> - </span> <span class="result-score text-danger">${fixture.score2}</span>`;
+                    } else {
+                        matchInfoContent = `<span class="vs">VS</span><div class="date">${fixture.date || 'TBD'}</div>`;
+                    }
+
+                    return `
+                        <div class="card fixture-card mb-3 position-relative" data-fixture-id="${fixture.id}">
+                            ${adminControlsHTML}
+                            ${fixture.isGameOfTheDay ? '<div class="game-of-the-day-badge">G.O.T.D</div>' : ''}
+                            
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="match-player">
+                                    <img src="${player1.avatarUrl || 'default_avatar.png'}" alt="${player1.name} avatar">
+                                    <span>${player1.name}</span>
+                                </div>
+                                <div class="match-info">
+                                    ${matchInfoContent}
+                                </div>
+                                <div class="match-player">
+                                    <span>${player2.name}</span>
+                                    <img src="${player2.avatarUrl || 'default_avatar.png'}" alt="${player2.name} avatar">
+                                </div>
+                            </div>
+                            
+                            ${renderPredictionBar(fixture.prediction, true)}
+                        </div>
+                    `;
+                }).join('');
+                fixturesContainer.innerHTML = fixtureHTML;
+            }
+            updateAISection(); // Call the new section update
+        }
+
+        function updateResults() {
+            const results = leagueData.fixtures
+                .filter(f => f.score1 !== undefined && f.score2 !== undefined)
+                .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort descending by date
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `<p class="text-center text-secondary">No results recorded yet.</p>`;
+                return;
+            }
+
+            const resultHTML = results.map(fixture => {
+                const player1 = leagueData.players.find(p => p.id === fixture.player1Id);
+                const player2 = leagueData.players.find(p => p.id === fixture.player2Id);
+
+                if (!player1 || !player2) return '';
+                
+                const adminControlsHTML = isAdmin ? `
+                    <div class="admin-controls">
+                        <button class="btn btn-sm btn-info" onclick="openEditFixtureModal('${fixture.id}')">
+                            <i class="fa-solid fa-edit"></i>
+                        </button>
+                    </div>
+                ` : '';
+
+                return `
+                    <div class="card fixture-card result-card mb-3 position-relative" data-fixture-id="${fixture.id}">
+                        ${adminControlsHTML}
+                        ${fixture.isGameOfTheDay ? '<div class="game-of-the-day-badge">G.O.T.D</div>' : ''}
+                        
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="match-player">
+                                <img src="${player1.avatarUrl || 'default_avatar.png'}" alt="${player1.name} avatar">
+                                <span>${player1.name}</span>
+                            </div>
+                            <div class="match-info">
+                                <span class="result-score text-success">${fixture.score1}</span> - <span class="result-score text-danger">${fixture.score2}</span>
+                                <div class="date small mt-1">${fixture.date || 'TBD'} (Matchday ${fixture.matchday})</div>
+                            </div>
+                            <div class="match-player">
+                                <span>${player2.name}</span>
+                                <img src="${player2.avatarUrl || 'default_avatar.png'}" alt="${player2.name} avatar">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            resultsContainer.innerHTML = resultHTML;
+        }
+
+        function updatePlayers() {
+            const playerList = document.getElementById('playerList');
+            const playerProfile = document.getElementById('playerProfile');
+
+            playerProfile.classList.add('d-none'); // Hide profile initially
+            playerList.innerHTML = '';
+            
+            leagueData.players.forEach(player => {
+                const listItem = document.createElement('a');
+                listItem.href = `javascript:showPlayerProfile('${player.id}')`;
+                listItem.className = 'list-group-item list-group-item-action player-list-item d-flex justify-content-between align-items-center';
+                listItem.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <img src="${player.avatarUrl || 'default_avatar.png'}" alt="${player.name}" class="avatar me-3">
+                        <span class="fw-bold">${player.name}</span>
+                        <span class="text-secondary ms-3 small">${player.team || 'No Team'}</span>
+                    </div>
+                    ${isAdmin ? `<button class="btn btn-sm btn-info" onclick="event.stopPropagation(); openEditPlayerModal('${player.id}')"><i class="fa-solid fa-edit"></i></button>` : ''}
+                `;
+                playerList.appendChild(listItem);
+            });
+            
+            populatePlayerSelectors();
+        }
+        
+        function showPlayerProfile(id) {
+            const player = leagueData.players.find(p => p.id === id);
+            if (!player) return;
+
+            const stats = calculatePlayerStats(id);
+            const playerProfile = document.getElementById('playerProfile');
+            playerProfile.classList.remove('d-none');
+
+            playerProfile.innerHTML = `
+                <div class="card-body">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-auto">
+                            <img src="${player.avatarUrl || 'default_avatar.png'}" alt="${player.name}" class="league-logo" style="width: 80px; height: 80px;">
+                        </div>
+                        <div class="col">
+                            <h3 class="fw-bold mb-0">${player.name}</h3>
+                            <p class="text-secondary mb-1">${player.team || 'No Club Affiliation'}</p>
+                            <p class="small text-muted mb-0">${player.bio || 'No bio provided.'}</p>
+                        </div>
+                        ${isAdmin ? `<div class="col-auto"><button class="btn btn-info" onclick="openEditPlayerModal('${player.id}')"><i class="fa-solid fa-edit me-1"></i> Edit</button></div>` : ''}
+                    </div>
+
+                    <h5 class="mb-3 text-primary"><i class="fa-solid fa-chart-bar me-1"></i> Season Stats</h5>
+                    <div class="row g-3 text-center">
+                        <div class="col-6 col-md-3">
+                            <div class="card player-stat-card border-primary">
+                                <div class="card-body py-2">
+                                    <div class="stat-value text-primary">${stats.mp}</div>
+                                    <div class="small text-muted">Matches Played</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card player-stat-card border-success">
+                                <div class="card-body py-2">
+                                    <div class="stat-value text-success">${stats.w}</div>
+                                    <div class="small text-muted">Wins</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card player-stat-card border-secondary">
+                                <div class="card-body py-2">
+                                    <div class="stat-value text-secondary">${stats.d}</div>
+                                    <div class="small text-muted">Draws</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card player-stat-card border-danger">
+                                <div class="card-body py-2">
+                                    <div class="stat-value text-danger">${stats.l}</div>
+                                    <div class="small text-muted">Losses</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mt-4 mb-3 text-primary"><i class="fa-solid fa-list-ul me-1"></i> Recent Results</h5>
+                    <div id="playerResultsContainer">
+                        ${stats.recentResults.length > 0 ? stats.recentResults.map(r => `
+                            <div class="d-flex justify-content-between py-1 border-bottom small">
+                                <div>vs ${r.opponent}</div>
+                                <div class="fw-bold text-${r.resultColor}">${r.result} (${r.score})</div>
+                            </div>
+                        `).join('') : '<p class="small text-center text-muted">No completed matches yet.</p>'}
+                    </div>
+                </div>
+            `;
+            // Scroll to profile
+            playerProfile.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- Standings Logic ---
+        function calculatePlayerStats(playerId) {
+            let stats = { mp: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0, form: [], recentResults: [] };
+
+            leagueData.fixtures.forEach(fixture => {
+                let isP1 = fixture.player1Id === playerId;
+                let isP2 = fixture.player2Id === playerId;
+                
+                if (isP1 || isP2) {
+                    // Only process completed games
+                    if (fixture.score1 !== undefined && fixture.score2 !== undefined) {
+                        stats.mp++;
+
+                        let scoreSelf = isP1 ? fixture.score1 : fixture.score2;
+                        let scoreOpp = isP1 ? fixture.score2 : fixture.score1;
+                        let opponent = leagueData.players.find(p => p.id === (isP1 ? fixture.player2Id : fixture.player1Id))?.name || 'Unknown';
+
+                        stats.gf += scoreSelf;
+                        stats.ga += scoreOpp;
+                        stats.gd = stats.gf - stats.ga;
+
+                        let result, resultColor, formCode;
+
+                        if (scoreSelf > scoreOpp) {
+                            stats.w++;
+                            stats.pts += 3;
+                            result = 'Win';
+                            resultColor = 'success';
+                            formCode = 'W';
+                        } else if (scoreSelf < scoreOpp) {
+                            stats.l++;
+                            result = 'Loss';
+                            resultColor = 'danger';
+                            formCode = 'L';
+                        } else {
+                            stats.d++;
+                            stats.pts += 1;
+                            result = 'Draw';
+                            resultColor = 'secondary';
+                            formCode = 'D';
+                        }
+                        
+                        stats.form.push(formCode);
+                        stats.recentResults.push({
+                            opponent,
+                            result,
+                            resultColor,
+                            score: `${scoreSelf}-${scoreOpp}`
+                        });
+                    }
+                }
+            });
+
+            // Keep only the last 5 results for form
+            stats.form = stats.form.slice(-5).reverse();
+            stats.recentResults = stats.recentResults.reverse();
+            
+            return stats;
+        }
+
+        function updateStandings() {
+            const standings = leagueData.players.map(player => {
+                const stats = calculatePlayerStats(player.id);
+                return {
+                    id: player.id,
+                    name: player.name,
+                    avatarUrl: player.avatarUrl,
+                    ...stats
+                };
+            }).sort((a, b) => {
+                if (b.pts !== a.pts) return b.pts - a.pts;
+                if (b.gd !== a.gd) return b.gd - a.gd;
+                return b.gf - a.gf;
+            });
+
+            const standingsTable = document.getElementById('standingsTable');
+            standingsTable.innerHTML = standings.map((player, index) => {
+                const formHTML = player.form.map(code => {
+                    let className = '';
+                    if (code === 'W') className = 'form-win';
+                    else if (code === 'D') className = 'form-draw';
+                    else if (code === 'L') className = 'form-loss';
+                    return `<span class="form-icon ${className}">${code}</span>`;
+                }).join('');
+
+                const posClass = (index + 1 <= 3) ? 'fw-bold text-primary' : ''; // Highlight top 3
+
+                return `
+                    <tr>
+                        <td class="pos-cell ${posClass}">${index + 1}</td>
+                        <td class="fw-bold" onclick="showPlayerProfile('${player.id}')" style="cursor:pointer;">
+                            <img src="${player.avatarUrl || 'default_avatar.png'}" alt="${player.name}" class="avatar">
+                            ${player.name}
+                            ${isAdmin ? `<button class="btn btn-sm btn-info ms-2" onclick="event.stopPropagation(); openEditPlayerModal('${player.id}')"><i class="fa-solid fa-edit"></i></button>` : ''}
+                        </td>
+                        <td>${player.mp}</td>
+                        <td>${player.w}</td>
+                        <td>${player.d}</td>
+                        <td>${player.l}</td>
+                        <td>${player.gf}</td>
+                        <td>${player.ga}</td>
+                        <td>${player.gd > 0 ? '+' : ''}${player.gd}</td>
+                        <td class="form-cell">${formHTML}</td>
+                        <td class="pts-cell text-primary">${player.pts}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // --- Main View Controller ---
+        function updateViews() {
+            updateStandings();
+            updateFixtures();
+            updateResults();
+            updatePlayers();
+            updateAISection(); // NEW: Update AI Insights
+        }
+
+        // --- DOMContentLoaded Listener ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Attach listeners
+            themeToggle.addEventListener('click', toggleTheme);
+            document.getElementById('admin-login-button').addEventListener('click', showAdminLogin);
+            
+            // Apply saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+            
+            // Load data (this function now triggers the intro sequence)
+            loadData(); 
+
+            // Hide all admin controls initially
+            document.querySelectorAll('.admin-mode').forEach(el => {
+                if (!isAdmin) el.style.display = 'none';
+            });
+            
+            // NEW LISTENERS for Prediction Admin Inputs
+            const adminPcts = ['adminWinPct', 'adminDrawPct', 'adminLossPct'];
+            adminPcts.forEach(id => {
+                const el = document.getElementById(id);
+                // Only attach if the element exists in the HTML (i.e. the modal is loaded)
+                if(el) el.addEventListener('input', updatePredictionTotal); 
+            });
+        });
+    </script>
+</body>
+</html>
